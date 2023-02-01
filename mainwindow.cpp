@@ -1,3 +1,6 @@
+#include <QTableWidget>
+#include <QDockWidget>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -7,45 +10,42 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    /*
-     * First menu
-     */
-    QMenu *firstMenu = new QMenu(tr("First menu"), this);
-    QAction *exitAction = new QAction(firstMenu);
-    connect(exitAction, &QAction::triggered, this, &MainWindow::close);
-    exitAction->setText(tr("Exit"));
-    exitAction->setShortcut(Qt::CTRL + Qt::Key_Q);
-    firstMenu->addAction(exitAction);
-
-    /*
-     * Second menu
-     */
-    QMenu *secondMenu = new QMenu(tr("Second menu"), this);
-    QAction *firstAction = new QAction(secondMenu);
-    firstAction->setText(tr("Action 1"));
-    connect(firstAction, &QAction::triggered, this, &MainWindow::actionTriggered);
-
-    /* Sub menu (second menu) */
-    QMenu *subMenu = new QMenu(tr("Sub menu"), secondMenu);
-    QAction *secondAction = new QAction(subMenu);
-    secondAction->setText(tr("Action 2"));
-    connect(secondAction, &QAction::triggered, this, &MainWindow::actionTriggered);
-    QAction *thirdAction = new QAction(subMenu);
-    thirdAction->setText(tr("Action 3"));
-    connect(thirdAction, &QAction::triggered, this, &MainWindow::actionTriggered);
-    subMenu->addAction(secondAction);
-    subMenu->addAction(thirdAction);
-    secondMenu->addAction(firstAction);
-    secondMenu->addMenu(subMenu);
-
-    ui->menubar->addMenu(firstMenu);
-    ui->menubar->addMenu(secondMenu);
-
+    createMenuAndActions();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::createMenuAndActions()
+{
+    m_firstMenu = new QMenu(tr("First menu"), this);
+    m_exitAction = new QAction(m_firstMenu);
+    connect(m_exitAction, &QAction::triggered, this, &MainWindow::close);
+    m_exitAction->setText(tr("Exit"));
+    m_exitAction->setShortcut(Qt::CTRL + Qt::Key_Q);
+    m_firstMenu->addAction(m_exitAction);
+
+    m_secondMenu = new QMenu(tr("Second menu"), this);
+    m_firstAction = new QAction(m_secondMenu);
+    m_firstAction->setText(tr("Action 1"));
+    connect(m_firstAction, &QAction::triggered, this, &MainWindow::actionTriggered);
+
+    m_subMenu = new QMenu(tr("Sub menu"), m_secondMenu);
+    m_secondAction = new QAction(m_subMenu);
+    m_secondAction->setText(tr("Action 2"));
+    connect(m_secondAction, &QAction::triggered, this, &MainWindow::actionTriggered);
+    m_thirdAction = new QAction(m_subMenu);
+    m_thirdAction->setText(tr("Action 3"));
+    connect(m_thirdAction, &QAction::triggered, this, &MainWindow::actionTriggered);
+    m_subMenu->addAction(m_secondAction);
+    m_subMenu->addAction(m_thirdAction);
+    m_secondMenu->addAction(m_firstAction);
+    m_secondMenu->addMenu(m_subMenu);
+
+    ui->menubar->addMenu(m_firstMenu);
+    ui->menubar->addMenu(m_secondMenu);
 }
 
 void MainWindow::actionTriggered(bool checked)
