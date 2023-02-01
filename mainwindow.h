@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTableWidget>
+#include <QDockWidget>
+#include <QPushButton>
+#include <QGridLayout>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,6 +21,7 @@ class MainWindow : public QMainWindow
 
     private:
         void createMenuAndActions();
+        void createButtons();
 
     private slots:
         void actionTriggered(bool checked);
@@ -31,6 +36,20 @@ class MainWindow : public QMainWindow
         QAction *m_firstAction;
         QAction *m_secondAction;
         QAction *m_thirdAction;
+
+        QPushButton *m_bttnStylePanel;
+        QPushButton *m_bttnTable;
+        QPushButton *m_bttnTextPanel;
+        QPushButton *m_bttnClearTextFields;
+        QPushButton *m_bttnAddTextField;
+        QPushButton *m_bttnAddLineTable;
+        QPushButton *m_bttnDeleteLineTable;
+
+        QTableWidget *m_tableWidget;
+        QGridLayout *m_mainGridLay;
+        QHBoxLayout *m_horLayForMainButtons;
+        QHBoxLayout *m_horLayForTableButtons;
+        QVBoxLayout *m_verLayForTableAndButtons;
 
 };
 #endif // MAINWINDOW_H

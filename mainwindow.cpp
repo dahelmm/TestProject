@@ -1,21 +1,72 @@
-#include <QTableWidget>
-#include <QDockWidget>
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow),
+      m_firstMenu(nullptr),
+      m_secondMenu(nullptr),
+      m_subMenu(nullptr),
+      m_exitAction(nullptr),
+      m_firstAction(nullptr),
+      m_secondAction(nullptr),
+      m_thirdAction(nullptr),
+      m_bttnStylePanel(nullptr),
+      m_bttnTable(nullptr),
+      m_bttnTextPanel(nullptr),
+      m_bttnClearTextFields(nullptr),
+      m_bttnAddTextField(nullptr),
+      m_bttnAddLineTable(nullptr),
+      m_bttnDeleteLineTable(nullptr),
+      m_tableWidget(nullptr),
+      m_mainGridLay(nullptr),
+      m_horLayForMainButtons(nullptr),
+      m_horLayForTableButtons(nullptr),
+      m_verLayForTableAndButtons(nullptr)
 {
     ui->setupUi(this);
 
     createMenuAndActions();
+    createButtons();
+
+    m_tableWidget = new QTableWidget(this);
+
+    m_mainGridLay = new QGridLayout;
+
+    m_horLayForMainButtons = new QHBoxLayout;
+    m_horLayForMainButtons->addWidget(m_bttnStylePanel);
+    m_horLayForMainButtons->addWidget(m_bttnTable);
+    m_horLayForMainButtons->addWidget(m_bttnTextPanel);
+    m_horLayForMainButtons->addWidget(m_bttnClearTextFields);
+    m_horLayForMainButtons->addWidget(m_bttnAddTextField);
+
+    m_horLayForTableButtons = new QHBoxLayout;
+    m_horLayForTableButtons->addWidget(m_bttnAddLineTable);
+    m_horLayForTableButtons->addWidget(m_bttnDeleteLineTable);
+
+    m_verLayForTableAndButtons = new QVBoxLayout;
+    m_verLayForTableAndButtons->addWidget(m_tableWidget);
+    m_verLayForTableAndButtons->addLayout(m_horLayForTableButtons);
+
+    m_mainGridLay->addLayout(m_horLayForMainButtons, 0, 0);
+    m_mainGridLay->addLayout(m_verLayForTableAndButtons, 1,0);
+
+
+
+
+
+
+
+    ui->centralwidget->setLayout(m_mainGridLay);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_horLayForMainButtons;
+    delete m_horLayForTableButtons;
+    delete m_verLayForTableAndButtons;
+    delete m_mainGridLay;
 }
 
 void MainWindow::createMenuAndActions()
@@ -46,6 +97,31 @@ void MainWindow::createMenuAndActions()
 
     ui->menubar->addMenu(m_firstMenu);
     ui->menubar->addMenu(m_secondMenu);
+}
+
+void MainWindow::createButtons()
+{
+    m_bttnStylePanel = new QPushButton(this);
+    m_bttnStylePanel->setText(tr("Hide style panel"));
+
+    m_bttnTable = new QPushButton(this);
+    m_bttnTable->setText(tr("Hide table"));
+
+    m_bttnTextPanel = new QPushButton(this);
+    m_bttnTextPanel->setText(tr("Hide text panel"));
+
+    m_bttnClearTextFields = new QPushButton(this);
+    m_bttnClearTextFields->setText(tr("Clear text tables"));
+
+    m_bttnAddTextField = new QPushButton(this);
+    m_bttnAddTextField->setText(tr("Add text tables"));
+
+    m_bttnAddLineTable = new QPushButton(this);
+    m_bttnAddLineTable->setText(tr("Add line"));
+
+    m_bttnDeleteLineTable = new QPushButton(this);
+    m_bttnDeleteLineTable->setText(tr("Delete line"));
+
 }
 
 void MainWindow::actionTriggered(bool checked)
