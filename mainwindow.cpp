@@ -1,3 +1,5 @@
+#include <QHeaderView>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -34,6 +36,15 @@ MainWindow::MainWindow(QWidget *parent)
     createButtons();
 
     m_tableWidget = new QTableWidget(this);
+    m_tableWidget->setColumnCount(3);
+    m_tableWidget->setHorizontalHeaderLabels(QStringList()<<tr("Id")<<tr("Parameter")<<tr("Value"));
+    m_tableWidget->setColumnWidth(0, 50);
+    m_tableWidget->setColumnWidth(2, 150);
+
+    m_tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+    m_tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    m_tableWidget->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
+
 
     m_mainGridLay = new QGridLayout;
 
