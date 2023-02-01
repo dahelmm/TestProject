@@ -20,9 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
       m_bttnDeleteLineTable(nullptr),
       m_tableWidget(nullptr),
       m_mainGridLay(nullptr),
+      m_gridLayTextFields(nullptr),
       m_horLayForMainButtons(nullptr),
       m_horLayForTableButtons(nullptr),
-      m_verLayForTableAndButtons(nullptr)
+      m_verLayForTableAndButtons(nullptr),
+      m_styleDockWidget(nullptr),
+      m_visibleTable(true),
+      m_visibleStyleDockWidget(true)
 {
     ui->setupUi(this);
 
@@ -51,11 +55,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_mainGridLay->addLayout(m_horLayForMainButtons, 0, 0);
     m_mainGridLay->addLayout(m_verLayForTableAndButtons, 1,0);
 
-
-
-
-
-
+    m_styleDockWidget = new QDockWidget(tr("Style"), this);
+    this->addDockWidget(Qt::LeftDockWidgetArea, m_styleDockWidget);
 
     ui->centralwidget->setLayout(m_mainGridLay);
 }
@@ -103,9 +104,11 @@ void MainWindow::createButtons()
 {
     m_bttnStylePanel = new QPushButton(this);
     m_bttnStylePanel->setText(tr("Hide style panel"));
+    connect(m_bttnStylePanel, &QPushButton::clicked, this, &MainWindow::bttnStylePanelClicked);
 
     m_bttnTable = new QPushButton(this);
     m_bttnTable->setText(tr("Hide table"));
+    connect(m_bttnTable, &QPushButton::clicked, this, &MainWindow::bttnTableClicked);
 
     m_bttnTextPanel = new QPushButton(this);
     m_bttnTextPanel->setText(tr("Hide text panel"));
@@ -121,7 +124,6 @@ void MainWindow::createButtons()
 
     m_bttnDeleteLineTable = new QPushButton(this);
     m_bttnDeleteLineTable->setText(tr("Delete line"));
-
 }
 
 void MainWindow::actionTriggered(bool checked)
@@ -130,5 +132,19 @@ void MainWindow::actionTriggered(bool checked)
     QAction *senderAction = qobject_cast<QAction*>(sender());
     Q_ASSERT(senderAction);
     ui->statusbar->showMessage(senderAction->text());
+}
+
+void MainWindow::bttnStylePanelClicked()
+{
+    m_visibleStyleDockWidget = !m_visibleStyleDockWidget;
+    m_styleDockWidget->setVisible(m_visibleStyleDockWidget);
+}
+
+void MainWindow::bttnTableClicked()
+{
+    m_visibleTable = !m_visibleTable;
+    m_tableWidget->setVisible(m_visibleTable);
+    m_bttnAddLineTable->setVisible(m_visibleTable);
+    m_bttnDeleteLineTable->setVisible(m_visibleTable);
 }
 

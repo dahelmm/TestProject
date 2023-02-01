@@ -25,6 +25,8 @@ class MainWindow : public QMainWindow
 
     private slots:
         void actionTriggered(bool checked);
+        void bttnStylePanelClicked();
+        void bttnTableClicked();
 
     private:
         Ui::MainWindow *ui;
@@ -47,9 +49,15 @@ class MainWindow : public QMainWindow
 
         QTableWidget *m_tableWidget;
         QGridLayout *m_mainGridLay;
+        QGridLayout *m_gridLayTextFields;
         QHBoxLayout *m_horLayForMainButtons;
         QHBoxLayout *m_horLayForTableButtons;
         QVBoxLayout *m_verLayForTableAndButtons;
+
+        QDockWidget *m_styleDockWidget;
+
+        bool m_visibleTable;
+        bool m_visibleStyleDockWidget;
 
 };
 #endif // MAINWINDOW_H
