@@ -8,6 +8,8 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QPlainTextEdit>
+#include <QRadioButton>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,6 +28,9 @@ class MainWindow : public QMainWindow
         void createButtons();
         QGroupBox *createGroupBox();
 
+    protected:
+        void closeEvent(QCloseEvent *event);
+
     private slots:
         void actionTriggered(bool checked);
         void bttnStylePanelClicked();
@@ -33,6 +38,9 @@ class MainWindow : public QMainWindow
         void bttnTextPanelClicked();
         void bttnAddLineClicked();
         void bttnDeleteLineClicked();
+
+        void setCustomStyleSheet(const QString &color);
+        void writeStyleToJson();
 
     private:
         Ui::MainWindow *ui;
@@ -53,6 +61,12 @@ class MainWindow : public QMainWindow
         QPushButton *m_bttnAddLineTable;
         QPushButton *m_bttnDeleteLineTable;
 
+        QRadioButton *m_actionBlueStyle;
+        QRadioButton *m_actionGreenStyle;
+        QRadioButton *m_actionGreyStyle;
+        QRadioButton *m_actionRedStyle;
+        QGridLayout *m_gridDockWidget;
+
         QTableWidget *m_tableWidget;
         QGridLayout *m_mainGridLay;
         QGridLayout *m_gridLayTable;
@@ -67,6 +81,8 @@ class MainWindow : public QMainWindow
 
         int m_counterTextFields;
         int m_counterLineInTable;
+
+        QString colorStyleSheet;
 
 };
 #endif // MAINWINDOW_H

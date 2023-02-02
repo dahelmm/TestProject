@@ -1,0 +1,16 @@
+QWidget
+{
+    background-color: #5f9457;
+    color: #F0FFFF
+}
+
+QTableWidget
+{
+    background-color: #d5f4d6
+}
+
+QStatusBar
+{
+    font-size: 20pt;
+    color: #F0FFFF;
+}

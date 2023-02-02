@@ -1,4 +1,7 @@
 #include <QHeaderView>
+#include <QDebug>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -36,6 +39,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     createMenuAndActions();
     createButtons();
+
+    QFile file("config/conf.json");
+    if(file.open(QIODevice::ReadOnly)){
+
+        QString list;
+        list.append(file.readAll());
+        file.close();
+
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(list.toUtf8());
+        QJsonObject jsonObj = jsonDoc.object();
+        QString color = jsonObj["style"].toString();
+        colorStyleSheet = color;
+        setCustomStyleSheet(colorStyleSheet);
+    }
+
+
 
     m_tableWidget = new QTableWidget(this);
     m_tableWidget->setColumnCount(3);
@@ -81,6 +100,18 @@ MainWindow::MainWindow(QWidget *parent)
     m_mainGridLay->addWidget(m_widgetForTextFields, 1, 1);
 
     m_styleDockWidget = new QDockWidget(tr("Style"), this);
+
+    QWidget *dockWidget = new QWidget(this);
+
+    m_gridDockWidget = new QGridLayout;
+    m_gridDockWidget->addWidget(m_actionBlueStyle);
+    m_gridDockWidget->addWidget(m_actionGreenStyle);
+    m_gridDockWidget->addWidget(m_actionGreyStyle);
+    m_gridDockWidget->addWidget(m_actionRedStyle);
+    connect(dockWidget, &QWidget::destroyed, m_gridDockWidget, &QGridLayout::deleteLater);
+    dockWidget->setLayout(m_gridDockWidget);
+    m_styleDockWidget->setWidget(dockWidget);
+
     this->addDockWidget(Qt::LeftDockWidgetArea, m_styleDockWidget);
 
     ui->centralwidget->setLayout(m_mainGridLay);
@@ -157,6 +188,41 @@ void MainWindow::createButtons()
     m_bttnDeleteLineTable = new QPushButton(this);
     connect(m_bttnDeleteLineTable, &QPushButton::clicked, this, &MainWindow::bttnDeleteLineClicked);
     m_bttnDeleteLineTable->setText(tr("Delete line"));
+
+    /*
+     * RADIO
+     */
+    m_actionBlueStyle = new QRadioButton(this);
+    connect(m_actionBlueStyle, &QRadioButton::clicked, [=] {
+        colorStyleSheet = "Blue";
+        setCustomStyleSheet(colorStyleSheet);
+        writeStyleToJson();
+    });
+    m_actionBlueStyle->setText(tr("Blue"));
+
+    m_actionGreenStyle = new QRadioButton(this);
+    connect(m_actionGreenStyle, &QRadioButton::clicked, [=] {
+        colorStyleSheet = "Green";
+        setCustomStyleSheet(colorStyleSheet);
+        writeStyleToJson();
+    });
+    m_actionGreenStyle->setText(tr("Green"));
+
+    m_actionGreyStyle = new QRadioButton(this);
+    connect(m_actionGreyStyle, &QRadioButton::clicked, [=] {
+        colorStyleSheet = "Grey";
+        setCustomStyleSheet(colorStyleSheet);
+        writeStyleToJson();
+    });
+    m_actionGreyStyle->setText(tr("Grey"));
+
+    m_actionRedStyle = new QRadioButton(this);
+    connect(m_actionRedStyle, &QRadioButton::clicked, [=] {
+        colorStyleSheet = "Red";
+        setCustomStyleSheet(colorStyleSheet);
+        writeStyleToJson();
+    });
+    m_actionRedStyle->setText(tr("Red"));
 }
 
 QGroupBox * MainWindow::createGroupBox()
@@ -188,6 +254,11 @@ QGroupBox * MainWindow::createGroupBox()
     groupBoxTextField->setLayout(horLayGroupBox);
     ++m_counterTextFields;
     return groupBoxTextField;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event){
+    writeStyleToJson();
+    event->accept();
 }
 
 void MainWindow::actionTriggered(bool checked)
@@ -241,4 +312,60 @@ void MainWindow::bttnDeleteLineClicked()
 {
     m_tableWidget->removeRow(m_counterLineInTable-1);
     m_counterLineInTable--;
+}
+
+void MainWindow::setCustomStyleSheet(const QString &color)
+{
+    if(color == "Blue"){
+        QFile file("config/blue.stylesheet");
+        if(file.open(QIODevice::ReadOnly)){
+            QString styleSheet;
+            styleSheet.append(file.readAll());
+            this->setStyleSheet(styleSheet);
+            file.close();
+            m_actionBlueStyle->setChecked(true);
+        }
+    }
+    else if(color == "Green"){
+        QFile file("config/green.stylesheet");
+        if(file.open(QIODevice::ReadOnly)){
+            QString styleSheet;
+            styleSheet.append(file.readAll());
+            this->setStyleSheet(styleSheet);
+            file.close();
+            m_actionGreenStyle->setChecked(true);
+
+        }
+    }
+    else if(color == "Grey"){
+        QFile file("config/grey.stylesheet");
+        if(file.open(QIODevice::ReadOnly)){
+            QString styleSheet;
+            styleSheet.append(file.readAll());
+            this->setStyleSheet(styleSheet);
+            file.close();
+            m_actionGreyStyle->setChecked(true);
+        }
+    }
+    else if(color == "Red"){
+        QFile file("config/red.stylesheet");
+        if(file.open(QIODevice::ReadOnly)){
+            QString styleSheet;
+            styleSheet.append(file.readAll());
+            this->setStyleSheet(styleSheet);
+            file.close();
+            m_actionRedStyle->setChecked(true);
+
+        }
+    }
+}
+
+void MainWindow::writeStyleToJson()
+{
+    QJsonObject jsonObj;
+    jsonObj["style"] = colorStyleSheet;
+    QFile fileJson("config/conf.json");
+    fileJson.open(QIODevice::WriteOnly);
+    fileJson.write(QJsonDocument(jsonObj).toJson());
+    fileJson.close();
 }

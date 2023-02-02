@@ -22,3 +22,10 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+  config/blue.stylesheet \
+  config/conf.json \
+  config/green.stylesheet \
+  config/grey.stylesheet \
+  config/red.stylesheet
