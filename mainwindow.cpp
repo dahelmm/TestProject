@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_bttnDeleteLineTable(nullptr),
       m_tableWidget(nullptr),
       m_mainGridLay(nullptr),
+      m_gridLayTable(nullptr),
       m_gridLayTextFields(nullptr),
       m_horLayForMainButtons(nullptr),
       m_horLayForTableButtons(nullptr),
@@ -29,8 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
       m_widgetForTextFields(nullptr),
       m_styleDockWidget(nullptr),
       m_counterTextFields(1),
-      m_visibleTable(true),
-      m_visibleStyleDockWidget(true)
+      m_counterLineInTable(0)
 {
     ui->setupUi(this);
 
@@ -82,7 +82,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_styleDockWidget = new QDockWidget(tr("Style"), this);
     this->addDockWidget(Qt::LeftDockWidgetArea, m_styleDockWidget);
-
 
     ui->centralwidget->setLayout(m_mainGridLay);
 }
@@ -152,9 +151,11 @@ void MainWindow::createButtons()
     m_bttnAddTextField->setText(tr("Add text tables"));
 
     m_bttnAddLineTable = new QPushButton(this);
+    connect(m_bttnAddLineTable, &QPushButton::clicked, this, &MainWindow::bttnAddLineClicked);
     m_bttnAddLineTable->setText(tr("Add line"));
 
     m_bttnDeleteLineTable = new QPushButton(this);
+    connect(m_bttnDeleteLineTable, &QPushButton::clicked, this, &MainWindow::bttnDeleteLineClicked);
     m_bttnDeleteLineTable->setText(tr("Delete line"));
 }
 
@@ -189,7 +190,6 @@ QGroupBox * MainWindow::createGroupBox()
     return groupBoxTextField;
 }
 
-
 void MainWindow::actionTriggered(bool checked)
 {
     Q_UNUSED(checked);
@@ -205,7 +205,6 @@ void MainWindow::bttnStylePanelClicked()
         m_bttnStylePanel->setText(tr("Hide style panel"));
     else
         m_bttnStylePanel->setText(tr("Show style panel"));
-
 }
 
 void MainWindow::bttnTableClicked()
@@ -226,5 +225,20 @@ void MainWindow::bttnTextPanelClicked()
         m_bttnTextPanel->setText(tr("Hide text panel"));
     else
         m_bttnTextPanel->setText(tr("Show text panel"));
+}
 
+void MainWindow::bttnAddLineClicked()
+{
+    m_tableWidget->insertRow(m_counterLineInTable);
+    m_tableWidget->setItem(m_counterLineInTable, 0, new QTableWidgetItem(tr("Id_%1").arg(m_counterLineInTable+1)));
+    m_tableWidget->setItem(m_counterLineInTable, 1, new QTableWidgetItem(tr("Parameter_%1").arg(m_counterLineInTable+1)));
+    m_tableWidget->setItem(m_counterLineInTable, 2, new QTableWidgetItem(tr("Value_%1").arg(m_counterLineInTable+1)));
+    ++m_counterLineInTable;
+
+}
+
+void MainWindow::bttnDeleteLineClicked()
+{
+    m_tableWidget->removeRow(m_counterLineInTable-1);
+    m_counterLineInTable--;
 }

@@ -31,6 +31,8 @@ class MainWindow : public QMainWindow
         void bttnStylePanelClicked();
         void bttnTableClicked();
         void bttnTextPanelClicked();
+        void bttnAddLineClicked();
+        void bttnDeleteLineClicked();
 
     private:
         Ui::MainWindow *ui;
@@ -64,8 +66,7 @@ class MainWindow : public QMainWindow
         QDockWidget *m_styleDockWidget;
 
         int m_counterTextFields;
-        bool m_visibleTable;
-        bool m_visibleStyleDockWidget;
+        int m_counterLineInTable;
 
 };
 #endif // MAINWINDOW_H
