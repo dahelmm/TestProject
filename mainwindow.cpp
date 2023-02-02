@@ -26,11 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
       m_horLayForMainButtons(nullptr),
       m_horLayForTableButtons(nullptr),
       m_verLayForTableAndButtons(nullptr),
-      m_groupBoxTextField(nullptr),
-      m_bttnDeleteTextField(nullptr),
-      m_bttnOkTextField(nullptr),
+      m_widgetForTextFields(nullptr),
       m_styleDockWidget(nullptr),
-      m_counterTextFields(0),
+      m_counterTextFields(1),
       m_visibleTable(true),
       m_visibleStyleDockWidget(true)
 {
@@ -73,12 +71,14 @@ MainWindow::MainWindow(QWidget *parent)
     m_gridLayTable->addLayout(m_verLayForTableAndButtons, 0,0);
     m_mainGridLay->addLayout(m_gridLayTable, 1, 0);
 
+    m_widgetForTextFields = new QWidget(this);
     m_gridLayTextFields = new QGridLayout;
     QGroupBox *newGb = createGroupBox();
     m_gridLayTextFields->addWidget(newGb);
     QGroupBox *newGb2 = createGroupBox();
     m_gridLayTextFields->addWidget(newGb2);
-    m_mainGridLay->addLayout(m_gridLayTextFields, 1, 1);
+    m_widgetForTextFields->setLayout(m_gridLayTextFields);
+    m_mainGridLay->addWidget(m_widgetForTextFields, 1, 1);
 
     m_styleDockWidget = new QDockWidget(tr("Style"), this);
     this->addDockWidget(Qt::LeftDockWidgetArea, m_styleDockWidget);
@@ -138,11 +138,17 @@ void MainWindow::createButtons()
 
     m_bttnTextPanel = new QPushButton(this);
     m_bttnTextPanel->setText(tr("Hide text panel"));
+    connect(m_bttnTextPanel, &QPushButton::clicked, this, &MainWindow::bttnTextPanelClicked);
 
     m_bttnClearTextFields = new QPushButton(this);
     m_bttnClearTextFields->setText(tr("Clear text tables"));
 
     m_bttnAddTextField = new QPushButton(this);
+    connect(m_bttnAddTextField, &QPushButton::clicked,
+            [=]{
+        QGroupBox *newGb = createGroupBox();
+        m_gridLayTextFields->addWidget(newGb);
+    });
     m_bttnAddTextField->setText(tr("Add text tables"));
 
     m_bttnAddLineTable = new QPushButton(this);
@@ -157,7 +163,8 @@ QGroupBox * MainWindow::createGroupBox()
     QGroupBox *groupBoxTextField = new QGroupBox(this);
 
     QPlainTextEdit *plainTextEdit = new QPlainTextEdit(groupBoxTextField);
-    plainTextEdit->setPlainText(tr("Text %1").arg(m_counterTextFields++));
+    connect(m_bttnClearTextFields, &QPushButton::clicked, plainTextEdit, &QPlainTextEdit::clear);
+    plainTextEdit->setPlainText(tr("Text %1").arg(m_counterTextFields));
 
     QPushButton *bttnDeleteTextField = new QPushButton(groupBoxTextField);
     connect(bttnDeleteTextField, &QPushButton::clicked, [=]{groupBoxTextField->deleteLater();});
@@ -210,4 +217,14 @@ void MainWindow::bttnTableClicked()
         m_bttnTable->setText(tr("Hide table"));
     else
         m_bttnTable->setText(tr("Show table"));
+}
+
+void MainWindow::bttnTextPanelClicked()
+{
+    m_widgetForTextFields->setVisible(!m_widgetForTextFields->isVisible());
+    if(m_widgetForTextFields->isVisible())
+        m_bttnTextPanel->setText(tr("Hide text panel"));
+    else
+        m_bttnTextPanel->setText(tr("Show text panel"));
+
 }

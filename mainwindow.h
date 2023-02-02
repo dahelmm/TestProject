@@ -30,6 +30,7 @@ class MainWindow : public QMainWindow
         void actionTriggered(bool checked);
         void bttnStylePanelClicked();
         void bttnTableClicked();
+        void bttnTextPanelClicked();
 
     private:
         Ui::MainWindow *ui;
@@ -58,10 +59,7 @@ class MainWindow : public QMainWindow
         QHBoxLayout *m_horLayForTableButtons;
         QVBoxLayout *m_verLayForTableAndButtons;
 
-        QGridLayout *m_gridLayTextField;
-        QGroupBox *m_groupBoxTextField;
-        QPushButton *m_bttnDeleteTextField;
-        QPushButton *m_bttnOkTextField;
+        QWidget *m_widgetForTextFields;
 
         QDockWidget *m_styleDockWidget;
 
