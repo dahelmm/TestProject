@@ -5,7 +5,13 @@ QWidget
 }
 QTableWidget
 {
-    background-color: #bcb5f7
+
+    background-color: #bcb5f7;
+    color: #0C090A
+}
+
+QHeaderView::section {
+    color: #0C090A
 }
 
 QStatusBar
