@@ -193,14 +193,21 @@ void MainWindow::actionTriggered(bool checked)
 
 void MainWindow::bttnStylePanelClicked()
 {
-    m_visibleStyleDockWidget = !m_visibleStyleDockWidget;
-    m_styleDockWidget->setVisible(m_visibleStyleDockWidget);
+    m_styleDockWidget->setVisible(!m_styleDockWidget->isVisible());
+    if(m_styleDockWidget->isVisible())
+        m_bttnStylePanel->setText(tr("Hide style panel"));
+    else
+        m_bttnStylePanel->setText(tr("Show style panel"));
+
 }
 
 void MainWindow::bttnTableClicked()
 {
-    m_visibleTable = !m_visibleTable;
-    m_tableWidget->setVisible(m_visibleTable);
-    m_bttnAddLineTable->setVisible(m_visibleTable);
-    m_bttnDeleteLineTable->setVisible(m_visibleTable);
+    m_tableWidget->setVisible(!m_tableWidget->isVisible());
+    m_bttnAddLineTable->setVisible(!m_bttnAddLineTable->isVisible());
+    m_bttnDeleteLineTable->setVisible(!m_bttnDeleteLineTable->isVisible());
+    if(m_tableWidget->isVisible())
+        m_bttnTable->setText(tr("Hide table"));
+    else
+        m_bttnTable->setText(tr("Show table"));
 }
