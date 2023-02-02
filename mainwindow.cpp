@@ -26,7 +26,11 @@ MainWindow::MainWindow(QWidget *parent)
       m_horLayForMainButtons(nullptr),
       m_horLayForTableButtons(nullptr),
       m_verLayForTableAndButtons(nullptr),
+      m_groupBoxTextField(nullptr),
+      m_bttnDeleteTextField(nullptr),
+      m_bttnOkTextField(nullptr),
       m_styleDockWidget(nullptr),
+      m_counterTextFields(0),
       m_visibleTable(true),
       m_visibleStyleDockWidget(true)
 {
@@ -45,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     m_tableWidget->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
 
-
     m_mainGridLay = new QGridLayout;
 
     m_horLayForMainButtons = new QHBoxLayout;
@@ -55,6 +58,10 @@ MainWindow::MainWindow(QWidget *parent)
     m_horLayForMainButtons->addWidget(m_bttnClearTextFields);
     m_horLayForMainButtons->addWidget(m_bttnAddTextField);
 
+    m_mainGridLay->addLayout(m_horLayForMainButtons, 0, 0);
+
+    m_gridLayTable = new QGridLayout;
+
     m_horLayForTableButtons = new QHBoxLayout;
     m_horLayForTableButtons->addWidget(m_bttnAddLineTable);
     m_horLayForTableButtons->addWidget(m_bttnDeleteLineTable);
@@ -63,11 +70,19 @@ MainWindow::MainWindow(QWidget *parent)
     m_verLayForTableAndButtons->addWidget(m_tableWidget);
     m_verLayForTableAndButtons->addLayout(m_horLayForTableButtons);
 
-    m_mainGridLay->addLayout(m_horLayForMainButtons, 0, 0);
-    m_mainGridLay->addLayout(m_verLayForTableAndButtons, 1,0);
+    m_gridLayTable->addLayout(m_verLayForTableAndButtons, 0,0);
+    m_mainGridLay->addLayout(m_gridLayTable, 1, 0);
+
+    m_gridLayTextFields = new QGridLayout;
+    QGroupBox *newGb = createGroupBox();
+    m_gridLayTextFields->addWidget(newGb);
+    QGroupBox *newGb2 = createGroupBox();
+    m_gridLayTextFields->addWidget(newGb2);
+    m_mainGridLay->addLayout(m_gridLayTextFields, 1, 1);
 
     m_styleDockWidget = new QDockWidget(tr("Style"), this);
     this->addDockWidget(Qt::LeftDockWidgetArea, m_styleDockWidget);
+
 
     ui->centralwidget->setLayout(m_mainGridLay);
 }
@@ -137,6 +152,37 @@ void MainWindow::createButtons()
     m_bttnDeleteLineTable->setText(tr("Delete line"));
 }
 
+QGroupBox * MainWindow::createGroupBox()
+{
+    QGroupBox *groupBoxTextField = new QGroupBox(this);
+
+    QPlainTextEdit *plainTextEdit = new QPlainTextEdit(groupBoxTextField);
+    plainTextEdit->setPlainText(tr("Text %1").arg(m_counterTextFields++));
+
+    QPushButton *bttnDeleteTextField = new QPushButton(groupBoxTextField);
+    connect(bttnDeleteTextField, &QPushButton::clicked, [=]{groupBoxTextField->deleteLater();});
+    bttnDeleteTextField->setText(tr("X"));
+
+    QPushButton *bttnOkTextField = new QPushButton(groupBoxTextField);
+    connect(bttnOkTextField, &QPushButton::clicked, [=]{ui->statusbar->showMessage(plainTextEdit->toPlainText());});
+    bttnOkTextField->setText(tr("OK"));
+
+    QVBoxLayout *vertLayBttnsTextField = new QVBoxLayout;
+    connect(groupBoxTextField, &QGroupBox::destroyed, vertLayBttnsTextField, &QVBoxLayout::deleteLater);
+    vertLayBttnsTextField->addWidget(bttnDeleteTextField);
+    vertLayBttnsTextField->addWidget(bttnOkTextField);
+
+    QHBoxLayout *horLayGroupBox = new QHBoxLayout;
+    connect(groupBoxTextField, &QGroupBox::destroyed, horLayGroupBox, &QHBoxLayout::deleteLater);
+    horLayGroupBox->addWidget(plainTextEdit);
+    horLayGroupBox->addLayout(vertLayBttnsTextField);
+
+    groupBoxTextField->setLayout(horLayGroupBox);
+    ++m_counterTextFields;
+    return groupBoxTextField;
+}
+
+
 void MainWindow::actionTriggered(bool checked)
 {
     Q_UNUSED(checked);
@@ -158,4 +204,3 @@ void MainWindow::bttnTableClicked()
     m_bttnAddLineTable->setVisible(m_visibleTable);
     m_bttnDeleteLineTable->setVisible(m_visibleTable);
 }
-

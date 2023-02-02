@@ -6,6 +6,8 @@
 #include <QDockWidget>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QGroupBox>
+#include <QPlainTextEdit>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,6 +24,7 @@ class MainWindow : public QMainWindow
     private:
         void createMenuAndActions();
         void createButtons();
+        QGroupBox *createGroupBox();
 
     private slots:
         void actionTriggered(bool checked);
@@ -49,13 +52,20 @@ class MainWindow : public QMainWindow
 
         QTableWidget *m_tableWidget;
         QGridLayout *m_mainGridLay;
+        QGridLayout *m_gridLayTable;
         QGridLayout *m_gridLayTextFields;
         QHBoxLayout *m_horLayForMainButtons;
         QHBoxLayout *m_horLayForTableButtons;
         QVBoxLayout *m_verLayForTableAndButtons;
 
+        QGridLayout *m_gridLayTextField;
+        QGroupBox *m_groupBoxTextField;
+        QPushButton *m_bttnDeleteTextField;
+        QPushButton *m_bttnOkTextField;
+
         QDockWidget *m_styleDockWidget;
 
+        int m_counterTextFields;
         bool m_visibleTable;
         bool m_visibleStyleDockWidget;
 
